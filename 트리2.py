@@ -1,34 +1,28 @@
 import sys
-sys.setrecursionlimit(10**9)  # dfs 반복횟수 제한 해제
 input = sys.stdin.readline
-
-# 입력
-n = int(input())
-graph = [[] for _ in range(n+1)]
-
-for _ in range(n-1):
-    parent, child, weight = map(int, input().split())
-    graph[parent].append([child, weight])
-    graph[child].append([parent, weight])
-
-# dfs
-def dfs(x, dist):
-    for i in graph[x]:
-        node, wei = i
-        if distance[node] == -1:
-            distance[node] = dist + wei
-            dfs(node, dist + wei)
-
-# 1번 노드에서 가장 먼 곳을 찾음
-distance = [-1] * (n+1)
-distance[1] = 0
+sys.setrecursionlimit(10 ** 9)
+ 
+V = int(input())
+graph = [[] for _ in range(V + 1)]
+ 
+for _ in range(V):
+    info = list(map(int, input().split()))
+    for n in range(1, len(info) - 2, 2):
+        graph[info[0]].append((info[n], info[n + 1])) # (연결노드, 거리)
+ 
+def dfs(start, distance):
+    for next, next_d in graph[start]:
+        if visited[next] == -1:
+            visited[next] = distance + next_d
+            dfs(next, distance + next_d)
+ 
+visited = [-1] * (V + 1)
+visited[1] = 0
 dfs(1, 0)
-
-# 찾은 노드에서 가장 먼 노드를 찾음
-res = distance.index(max(distance))
-distance = [-1] * (n+1)
-distance[res] = 0
-dfs(res, 0)
-
-# 출력
-print(max(distance))
+ 
+last_Node = visited.index(max(visited))
+visited = [-1] * (V + 1)
+visited[last_Node] = 0
+dfs(last_Node, 0)
+ 
+print(max(visited))
